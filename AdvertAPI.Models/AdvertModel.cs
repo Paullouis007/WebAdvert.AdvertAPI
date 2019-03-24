@@ -4,11 +4,13 @@ using System.Text;
 
 namespace AdvertAPI.Models
 {
-    public class AdvertDbModel
+    public class AdvertModel
     {
-        public String Title { get; set; }
-        public String Description { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public double Price { get; set; }
-        public AdvertStatus Status { get; set; }
+        public string UserName { get; set; }
+        public string FilePath { get; set; }
+        public string Id { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AdvertAPI.Services
 {
     [DynamoDBTable("Advert")]
-    public class AdvertDBModel
+    public class AdvertDbModel
     {
         [DynamoDBHashKey]
         public string Id { get; set; }
@@ -27,5 +27,11 @@ namespace AdvertAPI.Services
 
         [DynamoDBProperty]
         public AdvertStatus Status { get; set; }
+
+        [DynamoDBProperty]
+        public string FilePath { get; set; }
+
+        [DynamoDBProperty]
+        public string UserName { get; set; }
     }
 }
