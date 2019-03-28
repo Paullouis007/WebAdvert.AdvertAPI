@@ -16,22 +16,12 @@ namespace AdvertAPI.HealthChecks
         {
             _storageService = storageService;
         }
-        //public async ValueTask<IHealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken))
-        //{
-        //    var isStorageOk = await _storageService.HealthCheckAsync();
-        //    return HealthCheckResult.FromStatus(isStorageOk ? CheckStatus.Healthy : CheckStatus.Unhealthy, "");
-        //}
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            var isStorageOk = await _storageService.HealthCheckAsync().ConfigureAwait(false);
-
-            if (isStorageOk)
-            {
-                return (HealthCheckResult.Healthy("The check indicates a healthy result."));
-            }
-
-            return (HealthCheckResult.Unhealthy("The check indicates an unhealthy result."));
+            var isStorageOk = await _storageService.CheckHealthAsync();
+            return new HealthCheckResult(isStorageOk ? HealthStatus.Healthy : HealthStatus.Unhealthy);
         }
     }
 }

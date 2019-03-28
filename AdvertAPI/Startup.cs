@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AdvertAPI
 {
@@ -30,23 +31,43 @@ namespace AdvertAPI
 
             services.AddAutoMapper();
             services.AddTransient<IAdvertStorageService, DynamoDBAdvertStoragecs>();
+            services.AddTransient<StorageHealthCheck>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //services.AddHealthChecks(checks => {
-            //    checks.AddCheck<StorageHealthCheck>("Storage", new System.TimeSpan(0, 1, 0));
-            //});
-            services.AddHealthChecks().AddCheck<StorageHealthCheck>("example_health_check");
+            services.AddHealthChecks().AddCheck<StorageHealthCheck>("Storage");
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllOrigin", policy => policy.WithOrigins("*").AllowAnyHeader());
+            });
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "Web Advertisement Apis",
+                    Version = "version 1",
+                    Contact = new Contact
+                    {
+                        Name = "Aref Karimi",
+                        Email = "a@b.com"
+                    }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseHealthChecks("/health");
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web Advert Api");
+            });
             app.UseMvc();
         }
     }
